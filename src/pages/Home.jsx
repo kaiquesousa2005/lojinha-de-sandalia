@@ -54,13 +54,13 @@ function Home() {
       <section id="social" className="social">
         <h2>Siga-nos</h2>
         <div className="social-icons">
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/emasandals/" target="_blank" rel="noopener noreferrer">
             <FaInstagram />
           </a>
           <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
             <FaFacebook />
           </a>
-          <a href="https://api.whatsapp.com/send?phone=5511999999999" target="_blank" rel="noopener noreferrer">
+          <a href="https://api.whatsapp.com/send?phone=5585988522190" target="_blank" rel="noopener noreferrer">
             <FaWhatsapp />
           </a>
         </div>

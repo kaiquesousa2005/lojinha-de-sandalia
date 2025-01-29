@@ -53,7 +53,7 @@ function Cart() {
     message += `\nReferência: ${formData.reference}`;
 
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/5585985818139?text=${encodedMessage}`);
+    window.open(`https://wa.me/5585988522190?text=${encodedMessage}`);
   };
 
   return (
