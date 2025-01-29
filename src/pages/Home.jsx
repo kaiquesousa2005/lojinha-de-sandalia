@@ -21,15 +21,15 @@ function Home() {
   return (
     <main className="main">
       <section className="hero">
-        <h1 className="title">Bem-vinda à Sapatos Chiques</h1>
+        <h1 className="title">Bem-vinda à Ema's Sandales</h1>
         <p className="description">Descubra nossa coleção de calçados femininos elegantes e confortáveis.</p>
       </section>
 
       <section id="about" className="about">
         <h2>Sobre Nós</h2>
         <p>
-          Na Sapatos Chiques, acreditamos que cada mulher merece se sentir confiante e estilosa a cada passo. Nossa
-          paixão é oferecer calçados que combinam conforto excepcional com designs deslumbrantes.
+          Na Ema's Sandales, acreditamos que cada mulher merece se sentir confiante e estilosa a cada passo. Nossa
+          paixão é oferecer calçados que combinam conforto excepcional com designs deslumbrantes, fazemos entrega para toda região de Maracanaú, Maranguape e Fortaleza.
         </p>
       </section>
 
