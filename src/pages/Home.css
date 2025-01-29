@@ -1,0 +1,138 @@
+.main {
+    flex: 1;
+    padding: 1rem;
+    background-color: var(--background-light);
+    font-family: "Roboto", sans-serif;
+  }
+  
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-light);
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before,
+  .hero::after {
+    content: "★";
+    position: absolute;
+    color: var(--star-color);
+    opacity: 0.3;
+    font-size: 2rem;
+  }
+  
+  .hero::before {
+    top: 1rem;
+    left: 1rem;
+  }
+  
+  .hero::after {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  
+  .title {
+    font-family: "Playfair Display", serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .description {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  section {
+    margin-bottom: 4rem;
+  }
+  
+  h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 2rem;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  h2::before,
+  h2::after {
+    content: "★";
+    color: var(--primary-color);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+  }
+  
+  h2::before {
+    left: 20%;
+  }
+  
+  h2::after {
+    right: 20%;
+  }
+  
+  .about p {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+  }
+  
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+  }
+  
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .social-icons a {
+    color: var(--primary-color);
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .social-icons a:hover {
+    transform: scale(1.2);
+  }
+  
+  @media (max-width: 768px) {
+    .title {
+      font-size: 2rem;
+    }
+  
+    .product-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+  
+    h2::before,
+    h2::after {
+      display: none;
+    }
+  }
+  
+  
