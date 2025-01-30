@@ -1,7 +1,30 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
-import { db } from "../firebase/firebaseConfig"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { db, storage } from "../firebase/firebaseConfig"
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import "./AdminDashboard.css"
+
+function SortableItem(props) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: props.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <div className="image-preview">
+        <img src={props.url || "/placeholder.svg"} alt={`Preview ${props.index}`} />
+        <button onClick={() => props.onDelete(props.index)}>X</button>
+      </div>
+    </div>
+  )
+}
 
 function AdminDashboard() {
   const [products, setProducts] = useState([])
@@ -13,6 +36,14 @@ function AdminDashboard() {
     sizes: "",
   })
   const [editingProduct, setEditingProduct] = useState(null)
+  const [images, setImages] = useState([])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
 
   useEffect(() => {
     fetchProducts()
@@ -35,15 +66,24 @@ function AdminDashboard() {
   const addProduct = async (e) => {
     e.preventDefault()
     try {
+      const imageUrls = await Promise.all(
+        images.map(async (image) => {
+          const imageRef = ref(storage, `products/${image.name}`)
+          await uploadBytes(imageRef, image)
+          return getDownloadURL(imageRef)
+        }),
+      )
+
       await addDoc(collection(db, "products"), {
         name: newProduct.name,
         price: Number.parseFloat(newProduct.price),
         color: newProduct.color,
         stock: Number.parseInt(newProduct.stock),
         sizes: newProduct.sizes.split(",").map((size) => size.trim()),
-        imageUrl: `/images/${newProduct.name.toLowerCase().replace(/\s+/g, "-")}.jpg`,
+        images: imageUrls,
       })
       setNewProduct({ name: "", price: "", color: "", stock: "", sizes: "" })
+      setImages([])
       fetchProducts()
     } catch (error) {
       console.error("Error adding product: ", error)
@@ -71,6 +111,27 @@ function AdminDashboard() {
 
   const startEditing = (product) => {
     setEditingProduct({ ...product, sizes: product.sizes.join(", ") })
+  }
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files)
+    setImages([...images, ...files])
+  }
+
+  const handleImageDelete = (index) => {
+    setImages(images.filter((_, i) => i !== index))
+  }
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event
+
+    if (active.id !== over.id) {
+      setImages((items) => {
+        const oldIndex = items.findIndex((item) => item.name === active.id)
+        const newIndex = items.findIndex((item) => item.name === over.id)
+        return arrayMove(items, oldIndex, newIndex)
+      })
+    }
   }
 
   return (
@@ -117,6 +178,24 @@ function AdminDashboard() {
           placeholder="Tamanhos (separados por vírgula)"
           required
         />
+        <div className="image-upload">
+          <input type="file" multiple onChange={handleImageUpload} accept="image/*" />
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={images.map((image) => image.name)} strategy={verticalListSortingStrategy}>
+              <div className="image-preview-container">
+                {images.map((image, index) => (
+                  <SortableItem
+                    key={image.name}
+                    id={image.name}
+                    index={index}
+                    url={URL.createObjectURL(image)}
+                    onDelete={handleImageDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        </div>
         <button type="submit">Adicionar produto</button>
       </form>
       <div className="product-list">
@@ -173,6 +252,12 @@ function AdminDashboard() {
                 <p>Cor: {product.color}</p>
                 <p>Estoque: {product.stock}</p>
                 <p>Tamanhos: {product.sizes.join(", ")}</p>
+                <div className="product-images">
+                  {product.images &&
+                    product.images.map((image, index) => (
+                      <img key={index} src={image || "/placeholder.svg"} alt={`${product.name} - ${index + 1}`} />
+                    ))}
+                </div>
                 <button onClick={() => startEditing(product)}>Editar</button>
                 <button onClick={() => deleteProduct(product.id)}>Excluir</button>
               </>
